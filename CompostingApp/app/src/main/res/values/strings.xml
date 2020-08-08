@@ -1,0 +1,20 @@
+<resources>
+    <string name="app_name">CompostingApp</string>
+    <string name="RegisterTextCompost">New? <u>Register Here As A Host</u></string>
+    <string name="RegisterTextClient"><u>Or Here As A Donor</u></string>
+    <string name="title_activity_maps">Map</string>
+    <string name="google_maps_key">AIzaSyCLMZoLNDgZQS9dPU-qBrC7Mo_3r3OdqNI</string>
+
+    <string name="Username">Username <font fgcolor='#FF0000'>*</font></string>
+    <string name="Password">Password <font fgcolor='#FF0000'>*</font></string>
+    <string name="PasswordConfirm">Confirm\nPassword <font fgcolor='#FF0000'>*</font></string>
+    <string name="OrgName">Organization\n Name <font fgcolor='#FF0000'>*</font></string>
+    <string name="Email">Email <font fgcolor='#FF0000'>*</font></string>
+    <string name="Address">Address <font fgcolor='#FF0000'>*</font></string>
+    <string name="TypeOfService">Type of Service <font fgcolor='#FF0000'>*</font></string>
+    <string name="FirstName">First Name <font fgcolor='#FF0000'>*</font></string>
+    <string name="LastName">Last Name <font fgcolor='#FF0000'>*</font></string>
+
+    <string name="localhostURL">http://10.0.0.100:5000/</string>
+
+</resources>
