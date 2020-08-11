@@ -144,7 +144,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
         mMap.addMarker(new MarkerOptions().position(latLng).icon(BitmapDescriptorFactory.fromBitmap(smallMarker)).title("You are here"));
-        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng,14.0f));
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng,9.0f));
 
         if (!Places.isInitialized()) {
             Places.initialize(getApplicationContext(), apiKey);
@@ -207,7 +207,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     // The dialog is automatically dismissed when a dialog button is clicked.
                     .setPositiveButton("Send a message", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {
-                            Toast.makeText(MapsActivity.this, String.valueOf(marker.getTag()), Toast.LENGTH_LONG).show();
+                            Intent goToLogin = new Intent(MapsActivity.this, LoginActivity.class);
+                            startActivity(goToLogin);
                         }
                     })
 

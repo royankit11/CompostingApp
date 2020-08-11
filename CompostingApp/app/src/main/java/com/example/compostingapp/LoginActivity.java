@@ -161,7 +161,7 @@ public class LoginActivity extends AppCompatActivity {
         private void bringToDonorHomePage (String jsonUsername, String email, String firstName, String lastName) {
             Toast.makeText(LoginActivity.this, "Successfully logged in!", Toast.LENGTH_LONG).show();
 
-            Intent goToMaps = new Intent(LoginActivity.this, MapsActivity.class);
+            Intent goToMaps = new Intent(LoginActivity.this, EmailActivity.class);
             startActivity(goToMaps);
         }
 

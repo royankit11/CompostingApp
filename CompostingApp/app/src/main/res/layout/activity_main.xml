@@ -73,7 +73,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="Register as a composter"
+            android:text="Register as a host"
+            android:onClick="goToLogin"
             android:textSize="20sp">
 
         </Button>
@@ -83,7 +84,6 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginTop="70dp"
-            android:onClick="goToLogin"
             android:text="Learn More"
             android:fontFamily="sans-serif-condensed-medium"
             android:background="@android:color/holo_green_dark"
