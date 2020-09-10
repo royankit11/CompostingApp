@@ -4,34 +4,30 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
-
-import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 public class RegisterActivityCompost extends AppCompatActivity {
@@ -48,15 +44,15 @@ public class RegisterActivityCompost extends AppCompatActivity {
     EditText txtAddress2;
     EditText txtCity;
     Spinner typeOfService;
-    Spinner state;
-    Spinner country;
+    Spinner stateSpinner;
+    Spinner countrySpinner;
     String username;
-    String baseUrlGetAwards;
-    Boolean bringValues;
     ArrayAdapter<String> adapter;
-    Integer userID;
+    ArrayAdapter<String> adapter2;
+    ArrayAdapter<String> adapter3;
     String urlTemp;
-
+    String id;
+    boolean updateProfile;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,10 +61,19 @@ public class RegisterActivityCompost extends AppCompatActivity {
 
         urlTemp = getString(R.string.localhostURL);
         baseUrl = urlTemp + "RegisterComposter/";
+        baseUrlUpdateProfile = urlTemp + "updateProfileComposter/";
 
 
         //receive intent and parse values
         Intent receiveRegister = getIntent();
+
+        Bundle bndlUpdateProfile = receiveRegister.getExtras();
+
+        updateProfile = bndlUpdateProfile.getBoolean("UpdateProfile");
+
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        username = prefs.getString("HostUsername", null);
+        id = String.valueOf(prefs.getInt("HostID", 0));
 
 
         txtUsernameReg = findViewById(R.id.txtUsernameReg);
@@ -79,8 +84,8 @@ public class RegisterActivityCompost extends AppCompatActivity {
         txtAddress = findViewById(R.id.txtAddress);
         txtAddress2 = findViewById(R.id.txtAddress2);
         txtCity = findViewById(R.id.txtCity);
-        state = findViewById(R.id.state);
-        country = findViewById(R.id.country);
+        stateSpinner = findViewById(R.id.state);
+        countrySpinner = findViewById(R.id.country);
         typeOfService = findViewById(R.id.typeOfService);
 
 
@@ -95,7 +100,7 @@ public class RegisterActivityCompost extends AppCompatActivity {
         categories.add("Other");
 
         adapter = new ArrayAdapter<>(RegisterActivityCompost.this,
-                android.R.layout.simple_spinner_item, categories);
+                R.layout.spinner_item, categories);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
         typeOfService.setAdapter(adapter);
@@ -155,11 +160,11 @@ public class RegisterActivityCompost extends AppCompatActivity {
         categories2.add("WI");
         categories2.add("WY");
 
-        ArrayAdapter<String> adapter2 = new ArrayAdapter<>(RegisterActivityCompost.this,
-                android.R.layout.simple_spinner_item, categories2);
+        adapter2 = new ArrayAdapter<>(RegisterActivityCompost.this,
+                R.layout.spinner_item, categories2);
         adapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
-        state.setAdapter(adapter2);
+        stateSpinner.setAdapter(adapter2);
 
         List<String> categories3 = new ArrayList();
         categories3.add("Country");
@@ -167,11 +172,24 @@ public class RegisterActivityCompost extends AppCompatActivity {
         categories3.add("CAN");
         categories3.add("MEX");
 
-        ArrayAdapter<String> adapter3 = new ArrayAdapter<>(RegisterActivityCompost.this,
-                android.R.layout.simple_spinner_item, categories3);
+        adapter3 = new ArrayAdapter<>(RegisterActivityCompost.this,
+                R.layout.spinner_item, categories3);
         adapter3.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
-        country.setAdapter(adapter3);
+        countrySpinner.setAdapter(adapter3);
+
+        if(updateProfile) {
+            Handler handler = new Handler();
+            handler.postDelayed(new Runnable(){
+                public void run(){
+                    String final_url = urlTemp + "getCompostUser/" + username + "/" + "NA" + "/" + true;
+                    new myAsyncTaskGetUserInfo().execute(final_url);
+                }
+            }, 200);
+
+
+
+        }
 
     }
 
@@ -185,8 +203,8 @@ public class RegisterActivityCompost extends AppCompatActivity {
         String strAddress = String.valueOf(txtAddress.getText());
         String strAddress2 = String.valueOf(txtAddress2.getText());
         String strCity = String.valueOf(txtCity.getText());
-        String strState = state.getSelectedItem().toString();
-        String strCountry = country.getSelectedItem().toString();
+        String strState = stateSpinner.getSelectedItem().toString();
+        String strCountry = countrySpinner.getSelectedItem().toString();
         String strTOS = typeOfService.getSelectedItem().toString();
 
         if(!strRegisterUsername.equals("")) {
@@ -201,65 +219,86 @@ public class RegisterActivityCompost extends AppCompatActivity {
                                             if(!strCountry.equals("Country")) {
                                                 if(strRegisterPassword.equals(strPasswordConfirm)) {
                                                     if(strAddress2.equals("")) {
-                                                        List<String> latLng = getLocationFromAddress(this, strAddress +
-                                                                " " + strAddress2 + ", " + strCity + ", " + strState + ", "+ strCountry);
+                                                        List<String> latLng = getLocationFromAddress(this, strAddress
+                                                                + ", " + strCity + ", " + strState + ", "+ strCountry);
                                                         if(latLng.get(0).equals("Invalid Address")) {
                                                             return;
                                                         }
                                                         String strLatitude = latLng.get(0);
                                                         String strLongitude = latLng.get(1);
 
-                                                        String final_url = baseUrl + strRegisterUsername + "/" + strRegisterPassword +
-                                                                "/" + strAddress + "/null/" + strCity + "/" + strState + "/" + strCountry +
-                                                                "/" + strLatitude + "/" + strLongitude +"/" +
-                                                                strEmail + "/" + strTOS + "/" + strOrgName;
+                                                        if(updateProfile) {
+                                                            String final_url = baseUrlUpdateProfile + strRegisterUsername + "/" +
+                                                                    strRegisterPassword +
+                                                                    "/" + strAddress + "/null/" + strCity + "/" + strState + "/" + strCountry +
+                                                                    "/" + strLatitude + "/" + strLongitude +"/" +
+                                                                    strEmail + "/" + strTOS + "/" + strOrgName + "/" + id;
+                                                            new myAsyncTaskUpdateProfile().execute(final_url);
+                                                        } else {
+                                                            String final_url = baseUrl + strRegisterUsername + "/" + strRegisterPassword +
+                                                                    "/" + strAddress + "/null/" + strCity + "/" + strState + "/" + strCountry +
+                                                                    "/" + strLatitude + "/" + strLongitude +"/" +
+                                                                    strEmail + "/" + strTOS + "/" + strOrgName;
 
-                                                        new myAsyncTaskRegister().execute(final_url);
+                                                            new myAsyncTaskRegister().execute(final_url);
+                                                        }
+
                                                     } else {
-                                                        List<String> latLng = getLocationFromAddress(this, strAddress +
-                                                                ", " + strCity + ", " + strState + ", "+ strCountry);
+                                                        List<String> latLng = getLocationFromAddress(this, strAddress + " "
+                                                                        + strAddress2 + ", " + strCity + ", " + strState + ", "+ strCountry);
                                                         String strLatitude = latLng.get(0);
                                                         String strLongitude = latLng.get(1);
 
-                                                        String final_url = baseUrl + strRegisterUsername + "/" + strRegisterPassword +
-                                                                "/" + strAddress + "/" + strAddress2  + "/" + strCity + "/" + strState + "/" + strCountry +
-                                                                "/" + strLatitude + "/" + strLongitude +"/" +
-                                                                strEmail + "/" + strTOS + "/" + strOrgName;
+                                                        if(updateProfile) {
+                                                            String final_url = baseUrlUpdateProfile + strRegisterUsername + "/" +
+                                                                    strRegisterPassword +
+                                                                    "/" + strAddress + "/" + strAddress2 + "/" + strCity + "/" + strState + "/" + strCountry +
+                                                                    "/" + strLatitude + "/" + strLongitude +"/" +
+                                                                    strEmail + "/" + strTOS + "/" + strOrgName + "/" + id;
+                                                            new myAsyncTaskUpdateProfile().execute(final_url);
 
-                                                        new myAsyncTaskRegister().execute(final_url);
+                                                        } else {
+                                                            String final_url = baseUrl + strRegisterUsername + "/" + strRegisterPassword +
+                                                                    "/" + strAddress + "/" + strAddress2  + "/" + strCity + "/" + strState + "/" + strCountry +
+                                                                    "/" + strLatitude + "/" + strLongitude +"/" +
+                                                                    strEmail + "/" + strTOS + "/" + strOrgName;
+
+                                                            new myAsyncTaskRegister().execute(final_url);
+                                                        }
+
                                                     }
                                                 } else {
-                                                    Toast.makeText(RegisterActivityCompost.this, "Passwords do not match", Toast.LENGTH_LONG).show();
+                                                    Toast.makeText(RegisterActivityCompost.this, "Passwords do not match", Toast.LENGTH_SHORT).show();
                                                 }
                                             } else {
-                                                Toast.makeText(RegisterActivityCompost.this, "Please enter a country", Toast.LENGTH_LONG).show();
+                                                Toast.makeText(RegisterActivityCompost.this, "Please enter a country", Toast.LENGTH_SHORT).show();
                                             }
                                         } else {
-                                            Toast.makeText(RegisterActivityCompost.this, "Please enter a state", Toast.LENGTH_LONG).show();
+                                            Toast.makeText(RegisterActivityCompost.this, "Please enter a state", Toast.LENGTH_SHORT).show();
                                         }
                                     } else {
-                                        Toast.makeText(RegisterActivityCompost.this, "Please enter a city", Toast.LENGTH_LONG).show();
+                                        Toast.makeText(RegisterActivityCompost.this, "Please enter a city", Toast.LENGTH_SHORT).show();
                                     }
                                 } else {
-                                    Toast.makeText(RegisterActivityCompost.this, "Please select a service type", Toast.LENGTH_LONG).show();
+                                    Toast.makeText(RegisterActivityCompost.this, "Please select a service type", Toast.LENGTH_SHORT).show();
                                 }
                             } else {
-                                Toast.makeText(RegisterActivityCompost.this, "Please enter an address", Toast.LENGTH_LONG).show();
+                                Toast.makeText(RegisterActivityCompost.this, "Please enter an address", Toast.LENGTH_SHORT).show();
                             }
                         } else {
-                            Toast.makeText(RegisterActivityCompost.this, "Please enter an email", Toast.LENGTH_LONG).show();
+                            Toast.makeText(RegisterActivityCompost.this, "Please enter an email", Toast.LENGTH_SHORT).show();
                         }
                     } else {
-                        Toast.makeText(RegisterActivityCompost.this, "Please enter an organization name", Toast.LENGTH_LONG).show();
+                        Toast.makeText(RegisterActivityCompost.this, "Please enter an organization name", Toast.LENGTH_SHORT).show();
                     }
                 } else {
-                    Toast.makeText(RegisterActivityCompost.this, "Please confirm your password", Toast.LENGTH_LONG).show();
+                    Toast.makeText(RegisterActivityCompost.this, "Please confirm your password", Toast.LENGTH_SHORT).show();
                 }
             } else {
-                Toast.makeText(RegisterActivityCompost.this, "Please enter a password", Toast.LENGTH_LONG).show();
+                Toast.makeText(RegisterActivityCompost.this, "Please enter a password", Toast.LENGTH_SHORT).show();
             }
         } else {
-            Toast.makeText(RegisterActivityCompost.this, "Please enter a username", Toast.LENGTH_LONG).show();
+            Toast.makeText(RegisterActivityCompost.this, "Please enter a username", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -281,7 +320,7 @@ public class RegisterActivityCompost extends AppCompatActivity {
             p1.add(String.valueOf(location.getLongitude()));
 
         } catch (IOException ex) {
-            Toast.makeText(RegisterActivityCompost.this, "Invalid Address", Toast.LENGTH_LONG).show();
+            Toast.makeText(RegisterActivityCompost.this, "Invalid Address", Toast.LENGTH_SHORT).show();
             p1.add("Invalid Address");
         }
 
@@ -316,14 +355,14 @@ public class RegisterActivityCompost extends AppCompatActivity {
 
                         if(result.equals("SUCCESS")) {
                             finish();
-                            Toast.makeText(RegisterActivityCompost.this, "User has been registered successfully", Toast.LENGTH_LONG).show();
+                            Toast.makeText(RegisterActivityCompost.this, "User has been registered successfully", Toast.LENGTH_SHORT).show();
                         } else {
-                            Toast.makeText(RegisterActivityCompost.this, "Username already exists", Toast.LENGTH_LONG).show();
+                            Toast.makeText(RegisterActivityCompost.this, "Username already exists", Toast.LENGTH_SHORT).show();
                         }
 
 
                     } catch (JSONException e) {
-                        Toast.makeText(RegisterActivityCompost.this, "Unable to connect to database.", Toast.LENGTH_LONG).show();
+                        Toast.makeText(RegisterActivityCompost.this, "Unable to connect to database.", Toast.LENGTH_SHORT).show();
 
                     }
 
@@ -338,6 +377,141 @@ public class RegisterActivityCompost extends AppCompatActivity {
                     Toast.makeText(RegisterActivityCompost.this, error.toString(), Toast.LENGTH_LONG).show();
                 }
             };
+        }
+    }
+
+    public class myAsyncTaskUpdateProfile extends AsyncTask<String, Void, String> {
+        //this api is ONLY for updating the user
+        @Override
+        protected String doInBackground(String... url) {
+            JsonObjectRequest arrReq = new JsonObjectRequest(Request.Method.GET, url[0], (JSONObject) null, listener(), errorListener());
+            requestQueue.add(arrReq);
+
+            String done = "";
+            return done;
+        }
+        protected void onPostExecute(String done) {
+
+        }
+
+        private Response.Listener<JSONObject> listener(){
+            return new Response.Listener<JSONObject>() {
+
+                @Override
+                public void onResponse(JSONObject response) {
+                    try {
+                        String result = response.getString("Message");
+
+                        if(result.equals("SUCCESS")) {
+                            finish();
+                            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(RegisterActivityCompost.this);
+                            prefs.edit().putString("HostUsername", response.getString("Username")).apply();
+                            Toast.makeText(RegisterActivityCompost.this, "Profile has been updated successfully", Toast.LENGTH_LONG).show();
+                        } else {
+                            Toast.makeText(RegisterActivityCompost.this, "Username already exists", Toast.LENGTH_LONG).show();
+                        }
+
+                    } catch (JSONException e) {
+                        Toast.makeText(RegisterActivityCompost.this, "Unable to connect to database.", Toast.LENGTH_LONG).show();
+
+                    }
+
+                }
+            };
+        }
+
+        private Response.ErrorListener errorListener() {
+            return new Response.ErrorListener(){
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Toast.makeText(RegisterActivityCompost.this, "Unable to register.", Toast.LENGTH_LONG).show();
+                }
+            };
+        }
+    }
+
+    public class myAsyncTaskGetUserInfo extends AsyncTask<String, Void, String> {
+
+        //getting previous values if necessary
+        @Override
+        protected String doInBackground(String... url) {
+            JsonObjectRequest arrReq = new JsonObjectRequest(Request.Method.GET, url[0], (JSONObject) null, listener(), errorListener());
+            requestQueue.add(arrReq);
+
+            String done = "";
+            return done;
+        }
+
+        protected void onPostExecute(String done){
+        }
+
+        private Response.Listener<JSONObject> listener(){
+            return new Response.Listener<JSONObject>() {
+
+                @Override
+                public void onResponse(JSONObject response) {
+                    try {
+                        JSONObject jsonObject = response;
+                        String error = jsonObject.get("Error").toString();
+
+                        if (error.equals("")) {
+                            String jsonUsername = jsonObject.get("Username").toString();
+                            String password = jsonObject.get("Password").toString();
+                            String address1 = jsonObject.get("Address1").toString();
+                            String address2 = jsonObject.get("Address2").toString();
+                            String state = jsonObject.get("State").toString();
+                            String town = jsonObject.get("Town").toString();
+                            String country = jsonObject.get("Country").toString();
+                            String email = jsonObject.get("Email").toString();
+                            String tos = jsonObject.get("TypeOfService").toString();
+                            String orgname = jsonObject.get("OrgName").toString();
+
+
+                            setEditTexts(jsonUsername, password, address1, address2, state, town, country, email, tos, orgname);
+                        } else {
+                            Toast.makeText(RegisterActivityCompost.this, error, Toast.LENGTH_LONG).show();
+                        }
+
+
+
+                    } catch (Exception e) {
+                        Toast.makeText(RegisterActivityCompost.this, "Unable to connect to database.", Toast.LENGTH_LONG).show();
+
+                    }
+
+                }
+            };
+        }
+
+        private Response.ErrorListener errorListener() {
+            return new Response.ErrorListener(){
+
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Toast.makeText(RegisterActivityCompost.this, "Unable to get data.", Toast.LENGTH_LONG).show();
+                }
+            };
+        }
+        private void setEditTexts (String jsonUsername, String password, String address1, String address2, String state,
+                                   String city, String country, String email, String tos, String orgname) {
+
+            txtUsernameReg.setText(jsonUsername);
+            txtPasswordReg.setText(password);
+            txtPasswordConfirm.setText(password);
+            txtAddress.setText(address1);
+            txtAddress2.setText(address2);
+            txtCity.setText(city);
+            txtEmail.setText(email);
+            txtOrgName.setText(orgname);
+
+            int tosSpinnerPosition = adapter.getPosition(tos);
+            typeOfService.setSelection(tosSpinnerPosition);
+
+            int stateSpinnerPosition = adapter2.getPosition(state);
+            stateSpinner.setSelection(stateSpinnerPosition);
+
+            int countrySpinnerPosition = adapter3.getPosition(country);
+            countrySpinner.setSelection(countrySpinnerPosition);
         }
     }
 }

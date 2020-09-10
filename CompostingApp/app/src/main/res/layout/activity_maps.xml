@@ -17,10 +17,14 @@
         android:layout_height="match_parent"
         tools:context=".MapsActivity" />
 
-
-    <fragment android:id="@+id/autocomplete_fragment"
-        android:layout_width="match_parent"
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:name="com.google.android.libraries.places.widget.AutocompleteSupportFragment" />
+        android:padding="0dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="20dp"
+        android:scaleType="fitXY"
+        android:src="@mipmap/backicon"/>
 
 </RelativeLayout>

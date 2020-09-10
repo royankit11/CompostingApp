@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">CompostingApp</string>
+    <string name="app_name">Compost Trading</string>
     <string name="RegisterTextCompost">New? <u>Register Here As A Host</u></string>
     <string name="RegisterTextClient"><u>Or Here As A Donor</u></string>
     <string name="title_activity_maps">Map</string>
@@ -14,7 +14,13 @@
     <string name="TypeOfService">Type of Service <font fgcolor='#FF0000'>*</font></string>
     <string name="FirstName">First Name <font fgcolor='#FF0000'>*</font></string>
     <string name="LastName">Last Name <font fgcolor='#FF0000'>*</font></string>
+    <string name="LogOut"><u>Log Out</u></string>
+    <string name="UpdateProfile"><u>Update Profile</u></string>
 
     <string name="localhostURL">http://10.0.0.100:5000/</string>
+    <string name="title_activity_info_page">InfoPageActivity</string>
+    <string name="tab_text_1">Calculator</string>
+    <string name="tab_text_2">What Can I Compost?</string>
+    <string name="Co2">CO<sub>2</sub></string>
 
 </resources>

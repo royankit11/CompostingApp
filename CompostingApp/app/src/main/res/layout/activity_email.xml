@@ -5,21 +5,28 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".EmailActivity">
+    tools:context=".EmailActivity"
+    android:background="@android:color/holo_green_dark">
     
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="To: "
+        android:fontFamily="sans-serif-condensed-medium"
         android:layout_marginTop="30dp"
         android:layout_marginStart="30dp"
-        android:textAppearance="@style/TextAppearance.AppCompat.Large"/>
+        android:textColor="@android:color/white"
+        android:textSize="30sp" />
 
     <EditText
+        android:id="@+id/recipientEmail"
         android:layout_width="340dp"
-        android:layout_height="wrap_content"
+        android:layout_height="40dp"
         android:inputType="none"
-        android:layout_marginStart="30dp"/>
+        android:background="@drawable/loginbox"
+        android:layout_marginStart="30dp"
+        android:paddingStart="15dp"
+        android:paddingEnd="15dp"/>
 
     <TextView
         android:layout_width="match_parent"
@@ -27,13 +34,19 @@
         android:text="Subject: "
         android:layout_marginTop="30dp"
         android:layout_marginStart="30dp"
-        android:textAppearance="@style/TextAppearance.AppCompat.Large"/>
+        android:fontFamily="sans-serif-condensed-medium"
+        android:textColor="@android:color/white"
+        android:textSize="30sp" />
 
     <EditText
+        android:id="@+id/subject"
         android:layout_width="340dp"
-        android:layout_height="wrap_content"
+        android:layout_height="40dp"
         android:inputType="textEmailSubject"
-        android:layout_marginStart="30dp"/>
+        android:background="@drawable/loginbox"
+        android:layout_marginStart="30dp"
+        android:paddingStart="15dp"
+        android:paddingEnd="15dp"/>
 
     <TextView
         android:layout_width="match_parent"
@@ -41,16 +54,52 @@
         android:text="Message: "
         android:layout_marginTop="30dp"
         android:layout_marginStart="30dp"
-        android:textAppearance="@style/TextAppearance.AppCompat.Large"/>
+        android:fontFamily="sans-serif-condensed-medium"
+        android:textColor="@android:color/white"
+        android:textSize="30sp" />
 
     <EditText
+        android:id="@+id/message"
         android:layout_width="340dp"
         android:layout_height="wrap_content"
         android:padding="8dp"
         android:layout_marginStart="30dp"
         android:layout_marginTop="20dp"
         android:gravity="top"
-        android:background="@drawable/emailbox"
+        android:background="@drawable/loginbox"
         android:lines="10" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <Button
+            android:layout_width="150dp"
+            android:layout_height="60dp"
+            android:text="Send"
+            android:layout_marginTop="40dp"
+            android:layout_marginStart="40dp"
+            android:background="@drawable/mainpagebtn"
+            android:textColor="@android:color/white"
+            android:textAllCaps="false"
+            android:fontFamily="sans-serif-condensed-medium"
+            android:textSize="30sp"
+            android:onClick="sendEmail"/>
+        <Button
+            android:layout_width="150dp"
+            android:layout_height="60dp"
+            android:layout_marginStart="20dp"
+            android:text="Cancel"
+            android:layout_marginTop="40dp"
+            android:background="@drawable/mainpagebtn"
+            android:textColor="@android:color/white"
+            android:textAllCaps="false"
+            android:fontFamily="sans-serif-condensed-medium"
+            android:textSize="30sp"
+            android:onClick="backToMap"/>
+
+    </LinearLayout>
+
 
 </LinearLayout>

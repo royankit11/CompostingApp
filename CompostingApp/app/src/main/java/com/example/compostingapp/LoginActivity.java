@@ -3,8 +3,10 @@ package com.example.compostingapp;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
@@ -33,6 +35,7 @@ public class LoginActivity extends AppCompatActivity {
     RequestQueue requestQueue;
     RadioGroup radioGroup;
     RadioButton radioButton;
+    String recipientEmail;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +51,8 @@ public class LoginActivity extends AppCompatActivity {
         requestQueue = Volley.newRequestQueue(this);
 
         radioGroup = findViewById(R.id.radioGroup);
+
+        Intent receiveMap = getIntent();
     }
 
 
@@ -60,12 +65,16 @@ public class LoginActivity extends AppCompatActivity {
 
         if(!strUsername.equals("")) {
             if(!strPassword.equals("")) {
-                if(radioButton.getText().equals("I am a donor")) {
-                    String full_api_url = baseUrlDonor + strUsername + "/" + strPassword;
-                    new myAsyncTaskLogIn().execute(full_api_url);
+                if (radioGroup.getCheckedRadioButtonId() != -1) {
+                    if(radioButton.getText().equals("I am a donor")) {
+                        String full_api_url = baseUrlDonor + strUsername + "/" + strPassword + "/" + false;
+                        new myAsyncTaskLogIn().execute(full_api_url);
+                    } else {
+                        String full_api_url = baseUrlHost + strUsername + "/" + strPassword + "/" + false;
+                        new myAsyncTaskLogIn().execute(full_api_url);
+                    }
                 } else {
-                    String full_api_url = baseUrlHost + strUsername + "/" + strPassword;
-                    new myAsyncTaskLogIn().execute(full_api_url);
+                    Toast.makeText(LoginActivity.this, "Select a radio button", Toast.LENGTH_LONG).show();
                 }
             } else {
                 Toast.makeText(LoginActivity.this, "Provide password", Toast.LENGTH_LONG).show();
@@ -79,12 +88,14 @@ public class LoginActivity extends AppCompatActivity {
 
     public void goToRegisterCompost(View view) {
         Intent goToRegister = new Intent(this, RegisterActivityCompost.class);
+        goToRegister.putExtra("UpdateProfile", false);
         startActivity(goToRegister);
 
     }
 
     public void goToRegisterDonor(View view) {
         Intent goToRegister = new Intent(this, RegisterActivityDonor.class);
+        goToRegister.putExtra("UpdateProfile", false);
         startActivity(goToRegister);
     }
 
@@ -100,7 +111,6 @@ public class LoginActivity extends AppCompatActivity {
         }
 
         protected void onPostExecute(String done){
-            Toast.makeText(LoginActivity.this, done, Toast.LENGTH_LONG).show();
 
         }
 
@@ -121,16 +131,18 @@ public class LoginActivity extends AppCompatActivity {
                                 String email = jsonObject.get("Email").toString();
                                 String firstName = jsonObject.get("FirstName").toString();
                                 String lastName =jsonObject.get("LastName").toString();
+                                Integer id = jsonObject.getInt("ID");
 
-                                bringToDonorHomePage(jsonUsername, email, firstName, lastName);
+                                bringToDonorHomePage(jsonUsername, email, firstName, lastName, id);
                             } else {
                                 String jsonUsername = jsonObject.get("Username").toString();
                                 String address = jsonObject.get("Address1").toString();
                                 String email = jsonObject.get("Email").toString();
                                 String tos = jsonObject.get("TypeOfService").toString();
                                 String orgName = jsonObject.get("OrgName").toString();
+                                Integer id = jsonObject.getInt("ID");
 
-                                bringToHostHomePage(jsonUsername, address, email, tos, orgName);
+                                bringToHostHomePage(jsonUsername, address, email, tos, orgName, id);
                             }
 
 
@@ -141,7 +153,7 @@ public class LoginActivity extends AppCompatActivity {
 
 
                     } catch (JSONException e) {
-                        Toast.makeText(LoginActivity.this, "Unable to connect to database.", Toast.LENGTH_LONG).show();
+                        Toast.makeText(LoginActivity.this, "Unable to connect to database.", Toast.LENGTH_SHORT).show();
 
                     }
 
@@ -158,18 +170,30 @@ public class LoginActivity extends AppCompatActivity {
                 }
             };
         }
-        private void bringToDonorHomePage (String jsonUsername, String email, String firstName, String lastName) {
-            Toast.makeText(LoginActivity.this, "Successfully logged in!", Toast.LENGTH_LONG).show();
+        private void bringToDonorHomePage (String jsonUsername, String email, String firstName, String lastName, Integer id) {
+            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(LoginActivity.this);
+            prefs.edit().putString("ClientUsername", jsonUsername).apply();
+            prefs.edit().putBoolean("IsClientLoggedIn", true).apply();
+            prefs.edit().putString("UserEmail", email).apply();
+            prefs.edit().putInt("ClientID", id).apply();
 
-            Intent goToMaps = new Intent(LoginActivity.this, EmailActivity.class);
-            startActivity(goToMaps);
+            Toast.makeText(LoginActivity.this, "Successfully logged in!", Toast.LENGTH_SHORT).show();
+
+            Intent goToMain = new Intent(LoginActivity.this, MainActivity.class);
+            startActivity(goToMain);
         }
 
-        private void bringToHostHomePage (String jsonUsername, String address, String email, String tos, String orgName) {
-            Toast.makeText(LoginActivity.this, "Successfully logged in!", Toast.LENGTH_LONG).show();
+        private void bringToHostHomePage (String jsonUsername, String address, String email, String tos, String orgName, Integer id) {
+            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(LoginActivity.this);
+            prefs.edit().putString("HostUsername", jsonUsername).apply();
+            prefs.edit().putBoolean("IsHostLoggedIn", true).apply();
+            prefs.edit().putString("HostEmail", email).apply();
+            prefs.edit().putInt("HostID", id).apply();
 
-            Intent goToMaps = new Intent(LoginActivity.this, MapsActivity.class);
-            startActivity(goToMaps);
+            Toast.makeText(LoginActivity.this, "Successfully logged in!", Toast.LENGTH_SHORT).show();
+
+            Intent goToMain = new Intent(LoginActivity.this, MainActivityHost.class);
+            startActivity(goToMain);
         }
     }
 }

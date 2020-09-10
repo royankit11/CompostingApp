@@ -3,8 +3,11 @@ package com.example.compostingapp;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
@@ -34,8 +37,10 @@ public class RegisterActivityDonor extends AppCompatActivity {
     EditText txtLastName;
     EditText txtEmail;
     String username;
-    Integer userID;
     String urlTemp;
+    String id;
+    boolean updateProfile;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,10 +49,18 @@ public class RegisterActivityDonor extends AppCompatActivity {
 
         urlTemp = getString(R.string.localhostURL);
         baseUrl = urlTemp + "RegisterClient/";
-
+        baseUrlUpdateProfile = urlTemp + "updateProfileClient/";
 
         //receive intent and parse values
         Intent receiveRegister = getIntent();
+
+        Bundle bndlUpdateProfile = receiveRegister.getExtras();
+
+        updateProfile = bndlUpdateProfile.getBoolean("UpdateProfile");
+
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        username = prefs.getString("ClientUsername", null);
+        id = String.valueOf(prefs.getInt("ClientID", 0));
 
 
         txtUsernameReg = findViewById(R.id.txtUsernameReg);
@@ -57,8 +70,21 @@ public class RegisterActivityDonor extends AppCompatActivity {
         txtLastName = findViewById(R.id.txtLastName);
         txtEmail = findViewById(R.id.txtEmail);
 
+        if(updateProfile) {
+            Handler handler = new Handler();
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    String final_url = urlTemp + "getClientUser/" + username + "/NA/" + true;
+                    new myAsyncTaskGetUserInfo().execute(final_url);
+                }
+            }, 200);
+        }
+
 
         requestQueue = Volley.newRequestQueue(this);
+
+
     }
 
     public void registerNewUser(View view) {
@@ -77,12 +103,19 @@ public class RegisterActivityDonor extends AppCompatActivity {
                         if(!strEmail.equals("")) {
                             if(!strLastName.equals("")) {
                                 if(strRegisterPassword.equals(strPasswordConfirm)) {
-                                    String final_url = baseUrl + strRegisterUsername + "/" + strRegisterPassword + "/" +
-                                            strEmail + "/" + strFirstName + "/" +
-                                            strLastName;
+                                    if(updateProfile) {
+                                        String final_url = baseUrlUpdateProfile + strRegisterUsername + "/" + strRegisterPassword + "/" +
+                                                strEmail + "/" + strFirstName + "/" + strLastName + "/" + id;
 
-                                    new RegisterActivityDonor.myAsyncTaskRegister().execute(final_url);
+                                        new myAsyncTaskUpdateProfile().execute(final_url);
 
+                                    } else {
+                                        String final_url = baseUrl + strRegisterUsername + "/" + strRegisterPassword + "/" +
+                                                strEmail + "/" + strFirstName + "/" +
+                                                strLastName;
+
+                                        new myAsyncTaskRegister().execute(final_url);
+                                    }
                                 } else {
                                     Toast.makeText(RegisterActivityDonor.this, "Passwords do not match", Toast.LENGTH_LONG).show();
                                 }
@@ -119,11 +152,12 @@ public class RegisterActivityDonor extends AppCompatActivity {
             String done = "";
             return done;
         }
+
         protected void onPostExecute(String done) {
 
         }
 
-        private Response.Listener<JSONObject> listener(){
+        private Response.Listener<JSONObject> listener() {
             return new Response.Listener<JSONObject>() {
 
                 @Override
@@ -131,7 +165,7 @@ public class RegisterActivityDonor extends AppCompatActivity {
                     try {
                         String result = response.getString("Message");
 
-                        if(result.equals("SUCCESS")) {
+                        if (result.equals("SUCCESS")) {
                             finish();
                             Toast.makeText(RegisterActivityDonor.this, "User has been registered successfully", Toast.LENGTH_LONG).show();
                         } else {
@@ -149,12 +183,130 @@ public class RegisterActivityDonor extends AppCompatActivity {
         }
 
         private Response.ErrorListener errorListener() {
-            return new Response.ErrorListener(){
+            return new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
                     Toast.makeText(RegisterActivityDonor.this, error.toString(), Toast.LENGTH_LONG).show();
                 }
             };
+        }
+    }
+
+    public class myAsyncTaskUpdateProfile extends AsyncTask<String, Void, String> {
+        //this api is ONLY for updating the user
+        @Override
+        protected String doInBackground(String... url) {
+            JsonObjectRequest arrReq = new JsonObjectRequest(Request.Method.GET, url[0], (JSONObject) null, listener(), errorListener());
+            requestQueue.add(arrReq);
+
+            String done = "";
+            return done;
+        }
+        protected void onPostExecute(String done) {
+
+        }
+
+        private Response.Listener<JSONObject> listener(){
+            return new Response.Listener<JSONObject>() {
+
+                @Override
+                public void onResponse(JSONObject response) {
+                    try {
+                        String result = response.getString("Message");
+
+                        if(result.equals("SUCCESS")) {
+                            finish();
+                            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(RegisterActivityDonor.this);
+                            prefs.edit().putString("ClientUsername", response.getString("Username")).apply();
+                            Toast.makeText(RegisterActivityDonor.this, "Profile has been updated successfully", Toast.LENGTH_LONG).show();
+                        } else {
+                            Toast.makeText(RegisterActivityDonor.this, "Username already exists", Toast.LENGTH_LONG).show();
+                        }
+
+                    } catch (JSONException e) {
+                        Toast.makeText(RegisterActivityDonor.this, "Unable to connect to database.", Toast.LENGTH_LONG).show();
+
+                    }
+
+                }
+            };
+        }
+
+        private Response.ErrorListener errorListener() {
+            return new Response.ErrorListener(){
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Toast.makeText(RegisterActivityDonor.this, "Unable to register.", Toast.LENGTH_LONG).show();
+                }
+            };
+        }
+    }
+
+    public class myAsyncTaskGetUserInfo extends AsyncTask<String, Void, String> {
+
+        //getting previous values if necessary
+        @Override
+        protected String doInBackground(String... url) {
+            JsonObjectRequest arrReq = new JsonObjectRequest(Request.Method.GET, url[0], (JSONObject) null, listener(), errorListener());
+            requestQueue.add(arrReq);
+
+            String done = "";
+            return done;
+        }
+
+        protected void onPostExecute(String done){
+        }
+
+        private Response.Listener<JSONObject> listener(){
+            return new Response.Listener<JSONObject>() {
+
+                @Override
+                public void onResponse(JSONObject response) {
+                    try {
+                        JSONObject jsonObject = response;
+                        String error = jsonObject.get("Error").toString();
+
+                        if (error.equals("")) {
+                            String jsonUsername = jsonObject.get("Username").toString();
+                            String password = jsonObject.get("Password").toString();
+                            String email = jsonObject.get("Email").toString();
+                            String firstName = jsonObject.get("FirstName").toString();
+                            String lastName = jsonObject.get("LastName").toString();
+
+
+                            setEditTexts(jsonUsername, password, email, firstName, lastName);
+                        } else {
+                            Toast.makeText(RegisterActivityDonor.this, error, Toast.LENGTH_LONG).show();
+                        }
+
+
+
+                    } catch (Exception e) {
+                        Toast.makeText(RegisterActivityDonor.this, "Unable to connect to database.", Toast.LENGTH_LONG).show();
+
+                    }
+
+                }
+            };
+        }
+
+        private Response.ErrorListener errorListener() {
+            return new Response.ErrorListener(){
+
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Toast.makeText(RegisterActivityDonor.this, "Unable to get data.", Toast.LENGTH_LONG).show();
+                }
+            };
+        }
+        private void setEditTexts (String jsonUsername, String password, String email, String firstName, String lastName) {
+
+            txtUsernameReg.setText(jsonUsername);
+            txtPasswordReg.setText(password);
+            txtPasswordConfirm.setText(password);
+            txtEmail.setText(email);
+            txtFirstName.setText(firstName);
+            txtLastName.setText(lastName);
         }
     }
 }

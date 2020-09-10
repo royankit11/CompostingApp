@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivityHost"
+    android:background="#4b6e08">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+
+        <TextView
+            android:layout_width="347dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="10dp"
+            android:gravity="center"
+            android:fontFamily="sans-serif-condensed-medium"
+            android:text="Compost Trading"
+            android:textColor="@android:color/white"
+            android:textSize="70sp"
+            android:textStyle="bold">
+
+        </TextView>
+
+        <ImageView
+            android:layout_width="356dp"
+            android:layout_height="194dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="10dp"
+            android:src="@drawable/composttruck" />
+
+        <!--<TextView
+            android:layout_width="280dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:layout_marginTop="50dp"
+            android:background="@drawable/mainpagetxt"
+            android:text="I have waste!"
+            android:fontFamily="sans-serif-condensed-medium"
+            android:textColor="@android:color/white"
+            android:textSize="40sp">
+
+        </TextView>-->
+
+
+        <!--<TextView
+            android:layout_width="320dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="100dp"
+            android:background="@drawable/mainpagetxt"
+            android:text="I can compost!"
+            android:fontFamily="sans-serif-condensed-medium"
+            android:gravity="center"
+            android:textColor="@android:color/white"
+            android:textSize="40sp">
+
+        </TextView>-->
+
+
+        <Button
+            android:layout_width="300dp"
+            android:layout_height="70dp"
+            android:layout_gravity= "center"
+            android:gravity="center"
+            android:background="@drawable/mainpagebtn"
+            android:fontFamily="sans-serif-condensed-medium"
+            android:textAllCaps="false"
+            android:layout_marginTop="20dp"
+            android:textColor="@android:color/white"
+            android:textSize="30sp"
+            android:onClick="goToInbox"
+            android:text="Recent Requests"/>
+
+
+        <Button
+            android:layout_width="300dp"
+            android:layout_height="70dp"
+            android:layout_gravity="center"
+            android:background="@drawable/mainpagebtn"
+            android:fontFamily="sans-serif-condensed-medium"
+            android:textAllCaps="false"
+            android:layout_marginTop="20dp"
+            android:textColor="@android:color/white"
+            android:text="Learn More"
+            android:onClick="goToInfoPage"
+            android:textSize="30sp">
+
+        </Button>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:orientation="horizontal">
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginRight="50dp"
+                android:layout_marginTop="20dp"
+                android:background="@android:color/transparent"
+                android:text="@string/UpdateProfile"
+                android:textColor="@android:color/white"
+                android:onClick="goToRegisterCompost"
+                android:textSize="22sp">
+
+            </Button>
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="20dp"
+                android:background="@android:color/transparent"
+                android:text="@string/LogOut"
+                android:textSize="22sp"
+                android:onClick="logout"
+                android:textColor="@android:color/white"/>
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

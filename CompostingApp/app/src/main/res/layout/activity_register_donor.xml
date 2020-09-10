@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@android:color/holo_green_dark"
     tools:context=".RegisterActivityDonor">
 
     <LinearLayout
@@ -18,10 +19,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Donor Registration"
-            android:textColor="@android:color/black"
-            android:textSize="40sp"
+            android:textSize="45sp"
             android:layout_marginTop="20dp"
-            android:layout_marginStart="30dp"/>
+            android:layout_marginStart="20dp"
+            android:fontFamily="sans-serif-condensed-medium"
+            android:textColor="@android:color/white"/>
 
         <TextView
             android:layout_width="wrap_content"
@@ -29,8 +31,9 @@
             android:layout_marginStart="50dp"
             android:layout_marginTop="50dp"
             android:text="@string/Username"
-            android:textColor="@android:color/black"
-            android:textSize="15sp" />
+            android:fontFamily="sans-serif-condensed-medium"
+            android:textColor="@android:color/white"
+            android:textSize="20sp"/>
 
 
         <TextView
@@ -39,8 +42,9 @@
             android:layout_marginStart="50dp"
             android:layout_marginTop="30dp"
             android:text="@string/Password"
-            android:textColor="@android:color/black"
-            android:textSize="15sp" />
+            android:fontFamily="sans-serif-condensed-medium"
+            android:textColor="@android:color/white"
+            android:textSize="20sp"/>
 
         <TextView
             android:layout_width="wrap_content"
@@ -48,8 +52,9 @@
             android:layout_marginStart="50dp"
             android:layout_marginTop="30dp"
             android:text="@string/PasswordConfirm"
-            android:textColor="@android:color/black"
-            android:textSize="15sp" />
+            android:fontFamily="sans-serif-condensed-medium"
+            android:textColor="@android:color/white"
+            android:textSize="20sp"/>
 
         <TextView
             android:layout_width="wrap_content"
@@ -57,8 +62,9 @@
             android:layout_marginStart="50dp"
             android:layout_marginTop="30dp"
             android:text="@string/FirstName"
-            android:textColor="@android:color/black"
-            android:textSize="15sp" />
+            android:fontFamily="sans-serif-condensed-medium"
+            android:textColor="@android:color/white"
+            android:textSize="20sp"/>
 
 
         <TextView
@@ -67,17 +73,19 @@
             android:layout_marginStart="50dp"
             android:layout_marginTop="30dp"
             android:text="@string/LastName"
-            android:textColor="@android:color/black"
-            android:textSize="15sp" />
+            android:fontFamily="sans-serif-condensed-medium"
+            android:textColor="@android:color/white"
+            android:textSize="20sp" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="50dp"
-            android:layout_marginTop="37dp"
+            android:layout_marginTop="30dp"
             android:text="@string/Email"
-            android:textColor="@android:color/black"
-            android:textSize="15sp" />
+            android:fontFamily="sans-serif-condensed-medium"
+            android:textColor="@android:color/white"
+            android:textSize="20sp"/>
 
     </LinearLayout>
 
@@ -92,50 +100,71 @@
 
         <EditText
             android:id="@+id/txtUsernameReg"
-            android:layout_width="200dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="155dp"
-            android:layout_marginTop="110dp" />
+            android:layout_width="210dp"
+            android:layout_height="40dp"
+            android:paddingStart="15dp"
+            android:paddingEnd="15dp"
+            android:inputType="text"
+            android:background="@drawable/loginbox"
+            android:layout_marginStart="175dp"
+            android:layout_marginTop="140dp" />
 
 
         <EditText
             android:id="@+id/txtPasswordReg"
-            android:layout_width="200dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="155dp"
-            android:layout_marginTop="10dp"
+            android:layout_width="210dp"
+            android:layout_height="40dp"
+            android:paddingStart="15dp"
+            android:paddingEnd="15dp"
+            android:background="@drawable/loginbox"
+            android:layout_marginStart="175dp"
+            android:layout_marginTop="20dp"
             android:inputType="textPassword" />
 
         <EditText
             android:id="@+id/txtPasswordConfirm"
-            android:layout_width="200dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="155dp"
-            android:layout_marginTop="10dp"
+            android:layout_width="210dp"
+            android:layout_height="40dp"
+            android:layout_marginStart="175dp"
+            android:layout_marginTop="35dp"
+            android:paddingStart="15dp"
+            android:paddingEnd="15dp"
+            android:background="@drawable/loginbox"
             android:inputType="textPassword" />
 
         <EditText
             android:id="@+id/txtFirstName"
-            android:layout_width="200dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="155dp"
-            android:layout_marginTop="10dp" />
+            android:layout_width="210dp"
+            android:layout_height="40dp"
+            android:layout_marginStart="175dp"
+            android:layout_marginTop="20dp"
+            android:paddingStart="15dp"
+            android:paddingEnd="15dp"
+            android:inputType="text"
+            android:background="@drawable/loginbox"/>
 
         <EditText
             android:id="@+id/txtLastName"
-            android:layout_width="200dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="155dp"
-            android:layout_marginTop="10dp" />
+            android:layout_width="210dp"
+            android:layout_height="40dp"
+            android:layout_marginStart="175dp"
+            android:layout_marginTop="20dp"
+            android:paddingStart="15dp"
+            android:paddingEnd="15dp"
+            android:inputType="text"
+            android:background="@drawable/loginbox"/>
 
 
         <EditText
             android:id="@+id/txtEmail"
-            android:layout_width="200dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="155dp"
-            android:layout_marginTop="10dp"
-            android:inputType="textEmailAddress" />
+            android:layout_width="210dp"
+            android:layout_height="40dp"
+            android:layout_marginStart="175dp"
+            android:layout_marginTop="20dp"
+            android:inputType="textEmailAddress"
+            android:paddingStart="15dp"
+            android:paddingEnd="15dp"
+            android:background="@drawable/loginbox"/>
 
 
     </LinearLayout>
@@ -151,22 +180,28 @@
         app:layout_constraintTop_toBottomOf="@+id/l">
 
         <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="80dp"
+            android:layout_width="130dp"
+            android:layout_height="60dp"
+            android:layout_marginStart="30dp"
             android:onClick="registerNewUser"
             android:text="Save"
-            android:textColor="@android:color/black"
-            android:textSize="20sp" />
+            android:background="@drawable/mainpagebtn"
+            android:fontFamily="sans-serif-condensed-medium"
+            android:textColor="@android:color/white"
+            android:textAllCaps="false"
+            android:textSize="25sp"/>
 
         <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="130dp"
+            android:layout_height="60dp"
             android:layout_marginStart="20dp"
             android:onClick="backToLogin"
             android:text="Cancel"
-            android:textColor="@android:color/black"
-            android:textSize="20sp" />
+            android:background="@drawable/mainpagebtn"
+            android:fontFamily="sans-serif-condensed-medium"
+            android:textColor="@android:color/white"
+            android:textAllCaps="false"
+            android:textSize="25sp"/>
 
 
     </LinearLayout>
