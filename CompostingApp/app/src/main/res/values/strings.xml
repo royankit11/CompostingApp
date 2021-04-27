@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Compost Trading</string>
-    <string name="RegisterTextCompost">New? <u>Register Here As A Host</u></string>
-    <string name="RegisterTextClient"><u>Or Here As A Donor</u></string>
+    <string name="RegisterTextCompost">New? <u>Register Here As A Receiver</u></string>
+    <string name="RegisterTextClient"><u>Register Here As A Donor</u></string>
     <string name="title_activity_maps">Map</string>
     <string name="google_maps_key">AIzaSyCLMZoLNDgZQS9dPU-qBrC7Mo_3r3OdqNI</string>
 
@@ -17,7 +17,7 @@
     <string name="LogOut"><u>Log Out</u></string>
     <string name="UpdateProfile"><u>Update Profile</u></string>
 
-    <string name="localhostURL">http://10.0.0.100:5000/</string>
+    <string name="localhostURL">http://10.0.0.101:5000/</string>
     <string name="title_activity_info_page">InfoPageActivity</string>
     <string name="tab_text_1">Calculator</string>
     <string name="tab_text_2">What Can I Compost?</string>

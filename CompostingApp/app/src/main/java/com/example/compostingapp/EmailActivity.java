@@ -71,7 +71,7 @@ public class EmailActivity extends AppCompatActivity {
 
     public void sendEmail(View view) {
 
-        SendMail sm = new SendMail(EmailActivity.this, "subhraroy26@gmail.com", String.valueOf(subject.getText()),
+        SendMail sm = new SendMail(EmailActivity.this, strRecipient, String.valueOf(subject.getText()),
                 String.valueOf(message.getText()), userEmail);
         sm.execute();
 

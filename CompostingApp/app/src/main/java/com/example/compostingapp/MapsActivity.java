@@ -328,6 +328,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                 String town = record.getString("Town");
                                 String state = record.getString("State");
                                 String email = record.getString("Email");
+                                String tos = record.getString("TypeOfService");
                                 Integer id = record.getInt("ID");
 
                                 String fullAddress = address1 + ", " + town + ", " + state;
@@ -335,7 +336,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                 LatLng latLng = new LatLng(lat, lng);
 
 
-                                compostLocation = mMap.addMarker(new MarkerOptions().position(latLng).title(orgName).snippet(fullAddress));
+                                compostLocation = mMap.addMarker(new MarkerOptions().position(latLng).title(orgName)
+                                        .snippet(fullAddress + "\nService Provided:" + tos));
                                 compostLocation.setTag(email);
 
                                 emailToID.put(email, id);

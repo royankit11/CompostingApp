@@ -53,11 +53,14 @@ public class RegisterActivityCompost extends AppCompatActivity {
     String urlTemp;
     String id;
     boolean updateProfile;
+    AESCrypt aesCrypt;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register_compost);
+
+        aesCrypt = new AESCrypt();
 
         urlTemp = getString(R.string.localhostURL);
         baseUrl = urlTemp + "RegisterComposter/";
@@ -179,6 +182,8 @@ public class RegisterActivityCompost extends AppCompatActivity {
         countrySpinner.setAdapter(adapter3);
 
         if(updateProfile) {
+            txtUsernameReg.setKeyListener(null);
+            txtUsernameReg.setBackgroundResource(R.drawable.loginboxgrey);
             Handler handler = new Handler();
             handler.postDelayed(new Runnable(){
                 public void run(){
@@ -193,7 +198,7 @@ public class RegisterActivityCompost extends AppCompatActivity {
 
     }
 
-    public void registerNewUser(View view) {
+    public void registerNewUser(View view) throws Exception {
 
         String strRegisterUsername = String.valueOf(txtUsernameReg.getText());
         String strRegisterPassword = String.valueOf(txtPasswordReg.getText());
@@ -226,16 +231,17 @@ public class RegisterActivityCompost extends AppCompatActivity {
                                                         }
                                                         String strLatitude = latLng.get(0);
                                                         String strLongitude = latLng.get(1);
+                                                        String strEncryptedPassword = aesCrypt.encrypt(strRegisterPassword);
 
                                                         if(updateProfile) {
                                                             String final_url = baseUrlUpdateProfile + strRegisterUsername + "/" +
-                                                                    strRegisterPassword +
+                                                                    strEncryptedPassword +
                                                                     "/" + strAddress + "/null/" + strCity + "/" + strState + "/" + strCountry +
                                                                     "/" + strLatitude + "/" + strLongitude +"/" +
                                                                     strEmail + "/" + strTOS + "/" + strOrgName + "/" + id;
                                                             new myAsyncTaskUpdateProfile().execute(final_url);
                                                         } else {
-                                                            String final_url = baseUrl + strRegisterUsername + "/" + strRegisterPassword +
+                                                            String final_url = baseUrl + strRegisterUsername + "/" + strEncryptedPassword +
                                                                     "/" + strAddress + "/null/" + strCity + "/" + strState + "/" + strCountry +
                                                                     "/" + strLatitude + "/" + strLongitude +"/" +
                                                                     strEmail + "/" + strTOS + "/" + strOrgName;
@@ -248,17 +254,18 @@ public class RegisterActivityCompost extends AppCompatActivity {
                                                                         + strAddress2 + ", " + strCity + ", " + strState + ", "+ strCountry);
                                                         String strLatitude = latLng.get(0);
                                                         String strLongitude = latLng.get(1);
+                                                        String strEncryptedPassword = aesCrypt.encrypt(strRegisterPassword);
 
                                                         if(updateProfile) {
                                                             String final_url = baseUrlUpdateProfile + strRegisterUsername + "/" +
-                                                                    strRegisterPassword +
+                                                                    strEncryptedPassword +
                                                                     "/" + strAddress + "/" + strAddress2 + "/" + strCity + "/" + strState + "/" + strCountry +
                                                                     "/" + strLatitude + "/" + strLongitude +"/" +
                                                                     strEmail + "/" + strTOS + "/" + strOrgName + "/" + id;
                                                             new myAsyncTaskUpdateProfile().execute(final_url);
 
                                                         } else {
-                                                            String final_url = baseUrl + strRegisterUsername + "/" + strRegisterPassword +
+                                                            String final_url = baseUrl + strRegisterUsername + "/" + strEncryptedPassword +
                                                                     "/" + strAddress + "/" + strAddress2  + "/" + strCity + "/" + strState + "/" + strCountry +
                                                                     "/" + strLatitude + "/" + strLongitude +"/" +
                                                                     strEmail + "/" + strTOS + "/" + strOrgName;
@@ -465,9 +472,10 @@ public class RegisterActivityCompost extends AppCompatActivity {
                             String email = jsonObject.get("Email").toString();
                             String tos = jsonObject.get("TypeOfService").toString();
                             String orgname = jsonObject.get("OrgName").toString();
+                            String decryptedPassword = aesCrypt.decrypt(password);
 
 
-                            setEditTexts(jsonUsername, password, address1, address2, state, town, country, email, tos, orgname);
+                            setEditTexts(jsonUsername, decryptedPassword, address1, address2, state, town, country, email, tos, orgname);
                         } else {
                             Toast.makeText(RegisterActivityCompost.this, error, Toast.LENGTH_LONG).show();
                         }

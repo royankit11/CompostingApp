@@ -102,25 +102,11 @@ class updateProfileComposter(Resource):
     def get(self, strUsername, strPassword, strAddress1, strAddress2, strTown, strState, strCountry, intLat, intLng, strEmail, strTypeOfService, strOrgName, intID):
         
         DBfile = "C:\\Users\\Rik\\Desktop\\CompostingApp\\CompostingAppPy\\CompostingDB.accdb"
-
-        conn = pyodbc.connect('Driver={Microsoft Access Driver (*.mdb, *.accdb)};DBQ='+DBfile)
-        cur = conn.cursor()
-        message = {}
-
-        SQL = "SELECT Username FROM CompostUserData WHERE UCase(Username) = '" + strUsername.upper() + "' AND ID = " + intID
-        cur.execute(SQL)
-        users = cur.fetchall()
-        cur.close()
-        conn.close()
-
-        if users:
-            message["Message"] = "ERROR"
-            return jsonify(message)
-        else:                    
-            SQL = "UPDATE CompostUserData SET Username = '" + strUsername + "', Password = '" + strPassword + "', Address1 = '" + strAddress1 + "',"
-            SQL = SQL + " Address2 = '" + strAddress2 + "', Town = '" + strTown + "', State = '" + strState + "', Country = '" + strCountry + "',"
-            SQL = SQL + " Latitude = " + intLat + ", Longitude = " + intLng + ", Email = '" + strEmail + "', TypeOfService = '" + strTypeOfService + "',"
-            SQL = SQL + " OrgName = '" + strOrgName + "' WHERE ID = " + intID
+                    
+        SQL = "UPDATE CompostUserData SET Username = '" + strUsername + "', Password = '" + strPassword + "', Address1 = '" + strAddress1 + "',"
+        SQL = SQL + " Address2 = '" + strAddress2 + "', Town = '" + strTown + "', State = '" + strState + "', Country = '" + strCountry + "',"
+        SQL = SQL + " Latitude = " + intLat + ", Longitude = " + intLng + ", Email = '" + strEmail + "', TypeOfService = '" + strTypeOfService + "',"
+        SQL = SQL + " OrgName = '" + strOrgName + "' WHERE ID = " + intID
 
         conn2 = pyodbc.connect('Driver={Microsoft Access Driver (*.mdb, *.accdb)};DBQ='+DBfile)
         cur2 = conn2.cursor()
@@ -221,22 +207,10 @@ class updateProfileClient(Resource):
         
         DBfile = "C:\\Users\\Rik\\Desktop\\CompostingApp\\CompostingAppPy\\CompostingDB.accdb"
 
-        conn = pyodbc.connect('Driver={Microsoft Access Driver (*.mdb, *.accdb)};DBQ='+DBfile)
-        cur = conn.cursor()
-        message = {}
 
-        SQL = "SELECT Username FROM ClientUserData WHERE UCase(Username) = '" + strUsername.upper() + "' AND ID = " + intID
-        cur.execute(SQL)
-        users = cur.fetchall()
-        cur.close()
-        conn.close()
-
-        if users:
-            message["Message"] = "ERROR"
-            return jsonify(message)
-        else:                    
-            SQL = "UPDATE ClientUserData SET Username = '" + strUsername + "', Password = '" + strPassword + "', Email = '" + strEmail + "',"
-            SQL = SQL + " FirstName = '" + strFirstName + "', LastName = '" + strLastName + "' WHERE ID = " + intID
+                   
+        SQL = "UPDATE ClientUserData SET Username = '" + strUsername + "', Password = '" + strPassword + "', Email = '" + strEmail + "',"
+        SQL = SQL + " FirstName = '" + strFirstName + "', LastName = '" + strLastName + "' WHERE ID = " + intID
 
         conn2 = pyodbc.connect('Driver={Microsoft Access Driver (*.mdb, *.accdb)};DBQ='+DBfile)
         cur2 = conn2.cursor()
@@ -260,7 +234,7 @@ class getCompostLocations(Resource):
         conn = pyodbc.connect('Driver={Microsoft Access Driver (*.mdb, *.accdb)};DBQ='+DBfile)
         cur = conn.cursor()
 
-        SQL = "SELECT Latitude, Longitude, OrgName, Address1, Town, State, Email, ID FROM CompostUserData WHERE State = '" + strState + "'"
+        SQL = "SELECT Latitude, Longitude, OrgName, Address1, Town, State, Email, ID, TypeOfService FROM CompostUserData WHERE State = '" + strState + "'"
         cur.execute(SQL)
         locations = cur.fetchall()
         cur.close()
@@ -279,6 +253,7 @@ class getCompostLocations(Resource):
                 location_dict["State"] = locations[i][5]
                 location_dict["Email"] = locations[i][6]
                 location_dict["ID"] = locations[i][7]
+                location_dict["TypeOfService"] = locations[i][8]
                 location_dict["Error"] = ""
 
                 location_arr.append(location_dict)
@@ -292,6 +267,7 @@ class getCompostLocations(Resource):
             location_dict["State"] = ""
             location_dict["Email"] = ""
             location_dict["ID"] = ""
+            location_dict["TypeOfService"] = ""
             location_dict["Error"] = "No compost locations found"
 
             location_arr.append(location_dict)

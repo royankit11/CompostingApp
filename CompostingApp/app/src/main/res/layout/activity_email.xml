@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context=".EmailActivity"
-    android:background="@android:color/holo_green_dark">
+    android:background="#4b6e08">
     
     <TextView
         android:layout_width="match_parent"

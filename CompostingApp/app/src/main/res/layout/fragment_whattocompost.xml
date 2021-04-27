@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@android:color/holo_green_dark"
+    android:background="#4b6e08"
     tools:context=".ui.main.WhatToCompostFragment">
 
 
@@ -17,8 +17,8 @@
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/fab"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:padding="0dp"
             android:layout_marginStart="10dp"
             android:layout_marginTop="20dp"
@@ -32,6 +32,7 @@
             android:layout_gravity="center"
             android:layout_marginTop="-70dp"
             android:gravity="center"
+            android:layout_marginStart="30dp"
             android:fontFamily="sans-serif-condensed-medium"
             android:text="What Can I Compost?"
             android:textColor="@android:color/white"
@@ -214,7 +215,7 @@
             android:layout_marginTop="30dp"
             android:layout_marginBottom="30dp"
             android:fontFamily="sans-serif-condensed-medium"
-            android:text= "*Check with your local compost to see what scraps they accept"
+            android:text= "*Check with your local receiver to see what scraps they accept"
             android:textColor="@android:color/white"
             android:textSize="20sp"
             android:textStyle="bold" />

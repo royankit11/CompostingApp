@@ -38,7 +38,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
-public class ViewRequestsActivity extends AppCompatActivity {
+public class
+ViewRequestsActivity extends AppCompatActivity {
 
     RequestQueue requestQueue;
     Typeface boldTypeface = Typeface.defaultFromStyle(Typeface.BOLD);

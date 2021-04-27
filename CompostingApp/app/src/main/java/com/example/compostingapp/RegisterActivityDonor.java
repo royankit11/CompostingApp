@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -39,6 +40,7 @@ public class RegisterActivityDonor extends AppCompatActivity {
     String username;
     String urlTemp;
     String id;
+    AESCrypt aesCrypt;
     boolean updateProfile;
 
 
@@ -46,6 +48,8 @@ public class RegisterActivityDonor extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register_donor);
+
+        aesCrypt = new AESCrypt();
 
         urlTemp = getString(R.string.localhostURL);
         baseUrl = urlTemp + "RegisterClient/";
@@ -71,6 +75,9 @@ public class RegisterActivityDonor extends AppCompatActivity {
         txtEmail = findViewById(R.id.txtEmail);
 
         if(updateProfile) {
+            txtUsernameReg.setKeyListener(null);
+
+            txtUsernameReg.setBackgroundResource(R.drawable.loginboxgrey);
             Handler handler = new Handler();
             handler.postDelayed(new Runnable() {
                 @Override
@@ -87,7 +94,7 @@ public class RegisterActivityDonor extends AppCompatActivity {
 
     }
 
-    public void registerNewUser(View view) {
+    public void registerNewUser(View view) throws Exception {
 
         String strRegisterUsername = String.valueOf(txtUsernameReg.getText());
         String strRegisterPassword = String.valueOf(txtPasswordReg.getText());
@@ -103,14 +110,15 @@ public class RegisterActivityDonor extends AppCompatActivity {
                         if(!strEmail.equals("")) {
                             if(!strLastName.equals("")) {
                                 if(strRegisterPassword.equals(strPasswordConfirm)) {
+                                    String strEncryptedPassword = aesCrypt.encrypt(strRegisterPassword);
                                     if(updateProfile) {
-                                        String final_url = baseUrlUpdateProfile + strRegisterUsername + "/" + strRegisterPassword + "/" +
+                                        String final_url = baseUrlUpdateProfile + strRegisterUsername + "/" + strEncryptedPassword + "/" +
                                                 strEmail + "/" + strFirstName + "/" + strLastName + "/" + id;
 
                                         new myAsyncTaskUpdateProfile().execute(final_url);
 
                                     } else {
-                                        String final_url = baseUrl + strRegisterUsername + "/" + strRegisterPassword + "/" +
+                                        String final_url = baseUrl + strRegisterUsername + "/" + strEncryptedPassword + "/" +
                                                 strEmail + "/" + strFirstName + "/" +
                                                 strLastName;
 
@@ -273,8 +281,10 @@ public class RegisterActivityDonor extends AppCompatActivity {
                             String firstName = jsonObject.get("FirstName").toString();
                             String lastName = jsonObject.get("LastName").toString();
 
+                            String decryptedPassword = aesCrypt.decrypt(password);
 
-                            setEditTexts(jsonUsername, password, email, firstName, lastName);
+
+                            setEditTexts(jsonUsername, decryptedPassword, email, firstName, lastName);
                         } else {
                             Toast.makeText(RegisterActivityDonor.this, error, Toast.LENGTH_LONG).show();
                         }

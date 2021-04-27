@@ -36,11 +36,14 @@ public class LoginActivity extends AppCompatActivity {
     RadioGroup radioGroup;
     RadioButton radioButton;
     String recipientEmail;
+    AESCrypt aesCrypt;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        aesCrypt = new AESCrypt();
 
         String urlTemp = getString(R.string.localhostURL);
         baseUrlHost = urlTemp + "getCompostUser/";
@@ -56,7 +59,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
 
-    public void login(View view) {
+    public void login(View view) throws Exception {
         strUsername = String.valueOf(txtUsername.getText());
         strPassword = String.valueOf(txtPassword.getText());
 
@@ -66,11 +69,12 @@ public class LoginActivity extends AppCompatActivity {
         if(!strUsername.equals("")) {
             if(!strPassword.equals("")) {
                 if (radioGroup.getCheckedRadioButtonId() != -1) {
+                    String strEncryptedPassword = aesCrypt.encrypt(strPassword);
                     if(radioButton.getText().equals("I am a donor")) {
-                        String full_api_url = baseUrlDonor + strUsername + "/" + strPassword + "/" + false;
+                        String full_api_url = baseUrlDonor + strUsername + "/" + strEncryptedPassword + "/" + false;
                         new myAsyncTaskLogIn().execute(full_api_url);
                     } else {
-                        String full_api_url = baseUrlHost + strUsername + "/" + strPassword + "/" + false;
+                        String full_api_url = baseUrlHost + strUsername + "/" + strEncryptedPassword + "/" + false;
                         new myAsyncTaskLogIn().execute(full_api_url);
                     }
                 } else {
